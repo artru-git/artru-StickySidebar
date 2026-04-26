@@ -3,7 +3,7 @@
  * Modernized sticky behavior with ResizeObserver & MutationObserver.
  * Optimized for dynamic content (AdSense, Lazy-load, DOM changes).
  *
- * @version 1.0.0
+ * @version 1.0.1
  * @author  ARTRU <https://artru.net>
  * @license MIT
  */
@@ -12,9 +12,7 @@
     'use strict';
 
     const initArtruSticky = () => {
-        const stickyElement = document.querySelector('[data-sticky-sidebar]') ||
-            document.querySelector('[data-sticky="true"]');
-
+        const stickyElement = document.querySelector('[data-sticky-sidebar]');
         if (!stickyElement) return;
 
         const state = {
@@ -28,101 +26,38 @@
             isTicking: false
         };
 
-        // Reads attributes and updates the internal state
-        function updateFromAttributes() {
+        const updateFromAttributes = () => {
             const data = stickyElement.dataset;
             const rect = stickyElement.getBoundingClientRect();
-            const initialRectTop = rect.top + window.scrollY;
-
-            state.topGap = data.topGap === 'auto' ? initialRectTop : (parseInt(data.topGap) || 0);
+            
+            // Tính toán topGap: nếu là 'auto' thì lấy vị trí tự nhiên, ngược lại lấy số cụ thể
+            state.topGap = data.topGap === 'auto' 
+                ? (rect.top + window.scrollY) 
+                : (parseInt(data.topGap) || 0);
+            
             state.bottomGap = parseInt(data.bottomGap) || 0;
             state.mobileWidth = parseInt(data.mobileWidth) || 0;
 
             refreshAll();
-        }
+        };
 
-        // Helper to trigger full recalculation
-        function refreshAll() {
-            updateMetrics();
-            applyInitialStyles();
-            positionSidebar();
-        }
-
-        function init() {
-            // Default attribute injection
-            if (!stickyElement.hasAttribute('data-top-gap')) stickyElement.setAttribute('data-top-gap', '0');
-            if (!stickyElement.hasAttribute('data-bottom-gap')) stickyElement.setAttribute('data-bottom-gap', '0');
-            if (!stickyElement.hasAttribute('data-mobile-width')) stickyElement.setAttribute('data-mobile-width', '0');
-
-            updateFromAttributes();
-            setupObservers();
-        }
-
-        /**
-         * ENGINE: Hybrid Observer System
-         * MutationObserver for settings + ResizeObserver for layout shifts
-         */
-        function setupObservers() {
-            // Watch for Data Attribute changes
-            const attrObserver = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'attributes' && mutation.attributeName.startsWith('data-')) {
-                        updateFromAttributes();
-                    }
-                });
-            });
-            attrObserver.observe(stickyElement, { attributes: true });
-
-            // Watch for Size changes (The AdSense & Lazy-load Fix)
-            if (window.ResizeObserver) {
-                const resizeObserver = new ResizeObserver(() => {
-                    if (!state.isTicking) {
-                        state.isTicking = true;
-                        requestAnimationFrame(() => {
-                            refreshAll();
-                            state.isTicking = false;
-                        });
-                    }
-                });
-
-                resizeObserver.observe(stickyElement);
-                if (stickyElement.parentElement) {
-                    resizeObserver.observe(stickyElement.parentElement);
-                }
-            }
-        }
-
-        function updateMetrics() {
+        const updateMetrics = () => {
             state.viewportHeight = window.innerHeight;
             state.sidebarHeight = stickyElement.offsetHeight;
-        }
+        };
 
-        function applyInitialStyles() {
-            if (window.innerWidth > state.mobileWidth) {
-                stickyElement.style.position = 'sticky';
-                stickyElement.style.height = 'fit-content';
-
-                if (state.sidebarHeight + state.topGap + state.bottomGap <= state.viewportHeight) {
-                    state.lastComputedTop = state.topGap;
-                }
-                stickyElement.style.setProperty('top', `${state.lastComputedTop}px`, 'important');
-            } else {
-                stickyElement.style.removeProperty('position');
-                stickyElement.style.removeProperty('height');
-                stickyElement.style.removeProperty('top');
-            }
-        }
-
-        function positionSidebar() {
+        const positionSidebar = () => {
             if (window.innerWidth <= state.mobileWidth) return;
 
             const newScrollY = window.scrollY;
             const scrollDelta = state.currentScrollY - newScrollY;
             const bottomLimit = state.viewportHeight - state.sidebarHeight - state.bottomGap;
 
+            // Nếu Sidebar ngắn hơn Viewport: Dính chặt ở topGap
             if (state.sidebarHeight + state.topGap + state.bottomGap <= state.viewportHeight) {
                 state.lastComputedTop = state.topGap;
             } else {
+                // Nếu Sidebar dài hơn Viewport: Tính toán scroll lên/xuống
                 let targetTop = state.lastComputedTop + scrollDelta;
                 if (newScrollY < state.currentScrollY) {
                     targetTop = Math.min(state.topGap, targetTop);
@@ -135,7 +70,47 @@
             stickyElement.style.setProperty('top', `${state.lastComputedTop}px`, 'important');
             state.currentScrollY = newScrollY;
             state.isTicking = false;
+        };
+
+        const applyStyles = () => {
+            if (window.innerWidth > state.mobileWidth) {
+                stickyElement.style.position = 'sticky';
+                stickyElement.style.height = 'fit-content';
+                stickyElement.style.willChange = 'top'; // Tối ưu GPU
+                positionSidebar();
+            } else {
+                ['position', 'height', 'top', 'will-change'].forEach(p => stickyElement.style.removeProperty(p));
+            }
+        };
+
+        function refreshAll() {
+            updateMetrics();
+            applyStyles();
         }
+
+        // Theo dõi thay đổi Attributes và DOM (AdSense/Lazyload)
+        const setupObservers = () => {
+            const observer = new MutationObserver(mutations => {
+                if (mutations.some(m => m.attributeName?.startsWith('data-'))) {
+                    updateFromAttributes();
+                }
+            });
+            observer.observe(stickyElement, { attributes: true });
+
+            if (window.ResizeObserver) {
+                const ro = new ResizeObserver(() => {
+                    if (!state.isTicking) {
+                        state.isTicking = true;
+                        requestAnimationFrame(() => {
+                            refreshAll();
+                            state.isTicking = false;
+                        });
+                    }
+                });
+                ro.observe(stickyElement);
+                if (stickyElement.parentElement) ro.observe(stickyElement.parentElement);
+            }
+        };
 
         const onScroll = () => {
             if (!state.isTicking) {
@@ -144,20 +119,20 @@
             }
         };
 
+        // Khởi tạo
+        updateFromAttributes();
+        setupObservers();
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', refreshAll);
-
-        init();
     };
 
-    // Auto-init
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-        initArtruSticky();
-    } else {
+    if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initArtruSticky);
+    } else {
+        initArtruSticky();
     }
 
-    // Safety sync for late-loading ads
+    // Fix cho các trường hợp đặc biệt nội dung nhảy sau khi load xong hoàn toàn
     window.addEventListener("load", () => {
         setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
     });
