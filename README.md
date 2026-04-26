@@ -1,80 +1,120 @@
-🚀 Artru Sticky Sidebar
+# 🧲 ARTRU Sticky Sidebar
 
-Giải pháp JavaScript hiện đại cho Sticky Sidebar trượt 2 chiều. Được tối ưu hóa cho AdSense, Lazy-load và hiệu suất tối đa cho website năm 2026.
+**ARTRU Sticky Sidebar** là một thư viện JavaScript nhẹ, hiện đại, giúp tạo hiệu ứng sidebar sticky mượt mà và ổn định cho các website có nội dung động (Ads, Lazy-load, DOM thay đổi).
 
-✨ Tính năng nổi bật
+---
 
-Hybrid Observation: Kết hợp ResizeObserver và MutationObserver để theo dõi thay đổi kích thước DOM (quảng cáo AdSense, hình ảnh) theo thời gian thực.
+## 🚀 Cài đặt
 
-Siêu nhẹ: Chỉ khoảng 2KB, không phụ thuộc vào thư viện bên ngoài (Zero Dependencies).
+### 1. Thêm script
 
-Mượt mà: Sử dụng requestAnimationFrame giúp đạt 60fps khi cuộn trang.
+```html
+<script src="artru-stickysidebar.js"></script>
+```
 
-Core Web Vitals: Tối ưu để tránh gây hiện tượng Layout Shift (CLS).
+Link CDN
 
-📦 Cài đặt qua CDN
+```html
+<script src="artru-stickysidebar.js"></script>
+```
 
-Chèn dòng này vào trước thẻ đóng </body> trong HTML của bạn:
+---
 
-<script src="[https://cdn.jsdelivr.net/gh/artru-git/artru-lib@1.0.0/artru-stickysidebar.min.js](https://cdn.jsdelivr.net/gh/artru-git/artru-lib@1.0.0/artru-stickysidebar.min.js)"></script>
+## ✅ Cách sử dụng cơ bản
 
-
-🛠 Cách sử dụng
-
-1. Cấu trúc HTML
-
-Thêm thuộc tính data-sticky-sidebar vào thẻ bạn muốn làm sticky (thường là thẻ <aside> hoặc <div> của sidebar).
-
-<aside data-sticky-sidebar 
-       data-top-gap="20" 
-       data-bottom-gap="20" 
-       data-mobile-width="992">
-    <!-- Nội dung sidebar hoặc mã AdSense -->
+```html
+<aside data-sticky-sidebar>
+    Nội dung sidebar
 </aside>
+```
 
+Hoặc cách cũ (tương thích):
 
-2. Các tham số cấu hình (Data Attributes)
+```html
+<aside data-sticky="true">
+    Nội dung sidebar
+</aside>
+```
 
-Thuộc tính
+Script sẽ **tự động khởi chạy**, không cần gọi hàm.
 
-Mặc định
+---
 
-Mô tả
+## ⚙️ Thuộc tính cấu hình
 
-data-sticky-sidebar
+### `data-top-gap`
+Khoảng cách từ đỉnh màn hình.
 
-(Bắt buộc)
+```html
+<aside data-top-gap="80">
+```
 
-Kích hoạt tính năng cho phần tử.
+| Giá trị | Ý nghĩa |
+|------|------|
+| `0` | Sát top |
+| `80` | Cách top 80px |
+| `auto` | Lấy vị trí ban đầu |
 
-data-top-gap
+---
 
-0
+### `data-bottom-gap`
+Khoảng cách an toàn phía dưới.
 
-Khoảng cách từ đỉnh sidebar đến mép trên màn hình (px). Nhập auto để tự lấy vị trí hiện tại.
+```html
+<aside data-bottom-gap="20">
+```
 
-data-bottom-gap
+---
 
-0
+### `data-mobile-width`
+Chiều rộng (px) để tắt sticky trên mobile.
 
-Khoảng cách từ đáy sidebar đến mép dưới màn hình (px).
+```html
+<aside data-mobile-width="991">
+```
 
-data-mobile-width
+---
 
-0
+## 🔥 Ví dụ đầy đủ (khuyến nghị)
 
-Chiều rộng màn hình (px) mà dưới mức đó tính năng sticky sẽ tự động tắt.
+```html
+<aside
+  data-sticky-sidebar
+  data-top-gap="80"
+  data-bottom-gap="20"
+  data-mobile-width="1024"
+>
+    Nội dung sidebar
+</aside>
+```
 
-💡 Tại sao chọn ARTRU Lib?
+---
 
-Hầu hết các thư viện cũ thường bị lỗi tính toán sai vị trí khi Google AdSense tải quảng cáo muộn. Artru Sticky Sidebar giải quyết vấn đề này bằng cách:
+## 🧠 Cách hoạt động
 
-Lắng nghe Resize: Khi AdSense "nhảy" vào làm sidebar dài ra, thư viện tự động đo lại ngay lập tức.
+- Tự động theo dõi resize (ResizeObserver)
+- Theo dõi thay đổi data-attribute (MutationObserver)
+- Tối ưu scroll với requestAnimationFrame
+- Hoạt động tốt với AdSense, lazy-load
 
-Cập nhật thông minh: Tự động đồng bộ hóa layout sau 200ms khi trang load xong hoàn toàn.
+---
 
-📄 Giấy phép
+## 📱 Mobile
 
-Mã nguồn phát hành dưới giấy phép MIT.
+Khi width <= `data-mobile-width`:
+- Tắt sticky
+- Trả layout mặc định
 
-Phát triển bởi ARTRU
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## 👨‍💻 Tác giả
+
+**ARTRU**  
+https://artru.net
+
