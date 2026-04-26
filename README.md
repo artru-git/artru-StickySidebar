@@ -1,7 +1,80 @@
-🚀 ARTRU Sticky SidebarMột giải pháp JavaScript siêu nhẹ, hiện đại để xử lý Sticky Sidebar trượt 2 chiều. Được tối ưu đặc biệt cho các website chạy quảng cáo (AdSense), nội dung tải chậm (Lazy-load) và đảm bảo đạt điểm Core Web Vitals cao.✨ Tính năng nổi bậtResizeObserver Integration: Tự động tính toán lại vị trí khi quảng cáo AdSense hiển thị hoặc nội dung thay đổi chiều cao mà không cần F5.Smart Sticky: Hỗ trợ sidebar dài hơn màn hình (cuộn lên dính đỉnh, cuộn xuống dính đáy).Performance First: Sử dụng requestAnimationFrame và passive listeners để không gây giật lag khi cuộn.Zero Dependency: Không cần jQuery, chỉ dùng Vanilla JS thuần.📦 Cài đặt qua CDNBạn chỉ cần chèn dòng sau vào trước thẻ đóng </body>:HTML<script src="https://cdn.jsdelivr.net/gh/artru-git/artru-lib@1.0.0/artru-stickysidebar.min.js"></script>
-🛠 Cách sử dụng1. Cấu trúc HTMLChỉ cần thêm attribute data-sticky-sidebar vào phần tử bạn muốn làm sticky.HTML<aside data-sticky-sidebar 
+🚀 Artru Sticky Sidebar
+
+Giải pháp JavaScript hiện đại cho Sticky Sidebar trượt 2 chiều. Được tối ưu hóa cho AdSense, Lazy-load và hiệu suất tối đa cho website năm 2026.
+
+✨ Tính năng nổi bật
+
+Hybrid Observation: Kết hợp ResizeObserver và MutationObserver để theo dõi thay đổi kích thước DOM (quảng cáo AdSense, hình ảnh) theo thời gian thực.
+
+Siêu nhẹ: Chỉ khoảng 2KB, không phụ thuộc vào thư viện bên ngoài (Zero Dependencies).
+
+Mượt mà: Sử dụng requestAnimationFrame giúp đạt 60fps khi cuộn trang.
+
+Core Web Vitals: Tối ưu để tránh gây hiện tượng Layout Shift (CLS).
+
+📦 Cài đặt qua CDN
+
+Chèn dòng này vào trước thẻ đóng </body> trong HTML của bạn:
+
+<script src="[https://cdn.jsdelivr.net/gh/artru-git/artru-lib@1.0.0/artru-stickysidebar.min.js](https://cdn.jsdelivr.net/gh/artru-git/artru-lib@1.0.0/artru-stickysidebar.min.js)"></script>
+
+
+🛠 Cách sử dụng
+
+1. Cấu trúc HTML
+
+Thêm thuộc tính data-sticky-sidebar vào thẻ bạn muốn làm sticky (thường là thẻ <aside> hoặc <div> của sidebar).
+
+<aside data-sticky-sidebar 
        data-top-gap="20" 
        data-bottom-gap="20" 
        data-mobile-width="992">
-    </aside>
-2. Các tham số cấu hình (Data Attributes)Tham sốMặc địnhMô tảdata-sticky-sidebar(Bắt buộc)Kích hoạt tính năng sticky cho phần tử.data-top-gap0Khoảng cách từ đỉnh sidebar đến mép trên màn hình (px). Nhập auto để tự lấy theo vị trí ban đầu.data-bottom-gap0Khoảng cách từ đáy sidebar đến mép dưới màn hình (px).data-mobile-width0Chiều rộng màn hình (px) mà dưới mức đó tính năng sticky sẽ bị tắt (thường dùng cho mobile).💡 Tại sao nên dùng bản này của ARTRU?Hầu hết các thư viện sticky hiện nay bị lỗi khi AdSense chèn quảng cáo sau khi trang đã tải xong, dẫn đến việc sidebar che mất nội dung hoặc bị đẩy xuống quá sâu.Bản ARTRU Sticky Sidebar giải quyết triệt để vấn đề này bằng cách lắng nghe sự thay đổi kích thước DOM theo thời gian thực:MutationObserver: Theo dõi nếu bạn thay đổi cấu hình qua JS.ResizeObserver: Theo dõi nếu sidebar bị "phình" ra do nội dung động.Smart Sync: Tự động căn chỉnh lại vị trí sau 200ms khi trang load xong hoàn toàn.📄 Giấy phépSử dụng giấy phép MIT. Bạn hoàn toàn có thể sử dụng cho các dự án cá nhân hoặc thương mại.Developed by ARTRU.net
+    <!-- Nội dung sidebar hoặc mã AdSense -->
+</aside>
+
+
+2. Các tham số cấu hình (Data Attributes)
+
+Thuộc tính
+
+Mặc định
+
+Mô tả
+
+data-sticky-sidebar
+
+(Bắt buộc)
+
+Kích hoạt tính năng cho phần tử.
+
+data-top-gap
+
+0
+
+Khoảng cách từ đỉnh sidebar đến mép trên màn hình (px). Nhập auto để tự lấy vị trí hiện tại.
+
+data-bottom-gap
+
+0
+
+Khoảng cách từ đáy sidebar đến mép dưới màn hình (px).
+
+data-mobile-width
+
+0
+
+Chiều rộng màn hình (px) mà dưới mức đó tính năng sticky sẽ tự động tắt.
+
+💡 Tại sao chọn ARTRU Lib?
+
+Hầu hết các thư viện cũ thường bị lỗi tính toán sai vị trí khi Google AdSense tải quảng cáo muộn. Artru Sticky Sidebar giải quyết vấn đề này bằng cách:
+
+Lắng nghe Resize: Khi AdSense "nhảy" vào làm sidebar dài ra, thư viện tự động đo lại ngay lập tức.
+
+Cập nhật thông minh: Tự động đồng bộ hóa layout sau 200ms khi trang load xong hoàn toàn.
+
+📄 Giấy phép
+
+Mã nguồn phát hành dưới giấy phép MIT.
+
+Phát triển bởi ARTRU
