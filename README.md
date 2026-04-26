@@ -28,14 +28,6 @@ Link CDN
 </aside>
 ```
 
-Hoặc cách cũ (tương thích):
-
-```html
-<aside data-sticky="true">
-    Nội dung sidebar
-</aside>
-```
-
 Script sẽ **tự động khởi chạy**, không cần gọi hàm.
 
 ---
