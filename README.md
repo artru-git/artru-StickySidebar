@@ -15,7 +15,7 @@
 Link CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/artru-git/artru-StickySidebar@v1.0.0/artru-stickysidebar.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/artru-git/artru-StickySidebar@v1.0.1/artru-stickysidebar.min.js"></script>
 ```
 
 ---
